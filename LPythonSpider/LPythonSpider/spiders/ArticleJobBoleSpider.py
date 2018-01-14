@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
+'''
+@author:yangyang.ju
+伯乐在线Python模块的Spider
+'''
 import scrapy
 from scrapy import log
 from scrapy.http import Request
 
-
 class ArticlejobbolespiderSpider(scrapy.Spider):
     name = 'ArticleJobBoleSpider'
     allowed_domains = ['jobbole.com']
-    start_urls = ['http://python.jobbole.com/all-posts/page/80/']
+    start_urls = ['http://python.jobbole.com/all-posts']
 
     def parse(self, response):
         if response.status != 200 or len(response.text) == 0:
@@ -34,14 +37,14 @@ class ArticlejobbolespiderSpider(scrapy.Spider):
 
             articlelink = Article.xpath('./div[@class="post-meta"]/p/a[@class="archive-title"]/@href').extract()
 
-
         # 单页面解析完成，开始构建下一页的数据
         next_page_link = response.xpath('//div[@class="grid-8"]/div[@class="navigation margin-20"]/a[@class="next page-numbers"]/@href').extract_first()
+
         if next_page_link is None or len(next_page_link) == 0:
             log.logger.info('completed all page request')
+
         else:
             log.logger.info('will request next page and request url is %s'%next_page_link)
-
             yield Request(url=next_page_link)
 
 

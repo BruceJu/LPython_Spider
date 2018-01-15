@@ -8,11 +8,21 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import sys
+import os
 
 BOT_NAME = 'LPythonSpider'
 
 SPIDER_MODULES = ['LPythonSpider.spiders']
 NEWSPIDER_MODULE = 'LPythonSpider.spiders'
+
+BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, 'LPythonSpider'))
+
+USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0"
+
+RANDOM_UA_TYPE = "random"
+#
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -52,9 +62,11 @@ DOWNLOAD_DELAY = 5
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'LPythonSpider.middlewares.LpythonspiderDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   #'LPythonSpider.middlewares.LpythonspiderDownloaderMiddleware': 543,
+   'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
+
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html

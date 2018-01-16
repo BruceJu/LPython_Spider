@@ -7,6 +7,7 @@
 
 from scrapy import signals
 from fake_useragent import UserAgent
+from Util.common import ProxiesHelper
 
 
 class LpythonspiderSpiderMiddleware(object):
@@ -119,3 +120,17 @@ class RandomUserAgentMiddlware(object):
             return getattr(self.ua, self.ua_type)
         randomua = get_ua()
         request.headers.setdefault('User-Agent', randomua)
+
+class RandomProxiesIPMiddlware(object):
+    #随机更换user-agent
+    def __init__(self, crawler):
+        super(RandomProxiesIPMiddlware, self).__init__()
+        self.proxiesip = ProxiesHelper.queryIP()
+
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+
+    def process_request(self, request, spider):
+       pass

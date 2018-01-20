@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import requests
-import json
+
 import hashlib
 import requests
 import json
@@ -16,7 +15,7 @@ def get_md5(url):
     return m.hexdigest()
 
 def QueryRandomIP():
-    r = requests.get('http://127.0.0.1:8000/?types=0&count=20&country=国内')
+    r = requests.get('http:/192.168.1.106:8000/?types=0&count=20&country=国内')
     ip_ports = json.loads(r.text)
     index = random.randint(0, len(ip_ports) - 1)
     ip = ip_ports[index][0]

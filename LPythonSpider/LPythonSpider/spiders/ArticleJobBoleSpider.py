@@ -7,6 +7,7 @@ import scrapy
 from scrapy import log
 from scrapy.http import Request
 from items import ArticleItemLoader,LpythonspiderItem
+from Util import common
 
 
 class ArticlejobbolespiderSpider(scrapy.Spider):
@@ -47,6 +48,9 @@ class ArticlejobbolespiderSpider(scrapy.Spider):
 
             articlelink = Article.xpath('./div[@class="post-meta"]/p/a[@class="archive-title"]/@href').extract()
             itemloader.add_value('link', articlelink)
+
+            articleobjectid = common.get_md5(articlelink)
+            itemloader.add_value('object_id',articleobjectid)
 
             yield itemloader.load_item()
 

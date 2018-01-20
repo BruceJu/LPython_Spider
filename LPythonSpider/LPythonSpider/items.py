@@ -43,4 +43,7 @@ class LpythonspiderItem(scrapy.Item):
     #文章链接
     link = scrapy.Field()
 
+    #索引为分布式做准备
+    object_id = scrapy.Field()
+
     pass

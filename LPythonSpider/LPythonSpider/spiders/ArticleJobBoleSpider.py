@@ -47,6 +47,7 @@ class ArticlejobbolespiderSpider(scrapy.Spider):
         leancloud.init("avjbAbAq3Tjsft3OXhDCHPfC-gzGzoHsz", "jGadrhLEJ3nk9r0lPSQaCdLv")
         logging.basicConfig(level=logging.DEBUG)
 
+
     def parse(self, response):
         if response.status != 200 or len(response.text) == 0:
             log.logger.error('Current response is invalid')

@@ -78,7 +78,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'LPythonSpider.pipelines.JsonWithEncodingPipeline': 300,
-   'LPythonSpider.pipelines.LpythonspiderPipeline_leancloud': 400,
+   'LPythonSpider.pipelines.LpythonspiderPipeline_article_jobbole': 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

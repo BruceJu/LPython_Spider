@@ -13,13 +13,15 @@ from Util import common
 import threading
 import leancloud
 import logging
+from  scrapy_redis.spiders import RedisSpider
 
 
 
-class ArticlejobbolespiderSpider(scrapy.Spider):
+class ArticlejobbolespiderSpider(RedisSpider):
     name = 'ArticleJobBoleSpider'
     allowed_domains = ['jobbole.com']
-    start_urls = ['http://python.jobbole.com/all-posts']
+    redis_key = 'LPythonReids:start_urls'
+    # start_urls = ['http://python.jobbole.com/all-posts']
 
     def __init__(self, callbackUrl=None, **kwargs):
         super(ArticlejobbolespiderSpider, self).__init__()

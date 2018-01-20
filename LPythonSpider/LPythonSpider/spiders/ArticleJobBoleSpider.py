@@ -6,14 +6,46 @@
 import scrapy
 from scrapy import log
 from scrapy.http import Request
+from scrapy import signals
+from scrapy.xlib.pydispatch import dispatcher
 from items import ArticleItemLoader,LpythonspiderItem
 from Util import common
+import threading
+import leancloud
+import logging
+
 
 
 class ArticlejobbolespiderSpider(scrapy.Spider):
     name = 'ArticleJobBoleSpider'
     allowed_domains = ['jobbole.com']
     start_urls = ['http://python.jobbole.com/all-posts']
+
+    def __init__(self, callbackUrl=None, **kwargs):
+        super(ArticlejobbolespiderSpider, self).__init__()
+        dispatcher.connect(self.spider_open_receiver, signals.spider_opened)
+        dispatcher.connect(self.spider_error_receiver, signals.spider_error)
+        dispatcher.connect(self.spider_closed_receiver, signals.spider_closed)
+
+    def spider_open_receiver(self):
+        self.logger.info('Notice!! !!!Spider is start')
+        #开启多线程去初始化LeanCloudSDK
+        init_sdk_thread = threading.Thread(target=self.init_leancloud_sdk,name='init_leancloud_sdk_thread')
+        init_sdk_thread.setDaemon(True)
+        init_sdk_thread.start()
+
+
+    def spider_error_receiver(self):
+        # TODO:爬虫发生错误时响应，并以邮件的形式通知,这里补充发送邮件的逻辑
+        self.logger.info('!!!!!!!!!!!!!!!!!!!!!!!Error!!!!!!!!!!!!!!!!!!!!!')
+        pass
+
+    def spider_closed_receiver(self):
+        self.logger.info('Notice!! Spider is closed')
+
+    def  init_leancloud_sdk(self):
+        leancloud.init("avjbAbAq3Tjsft3OXhDCHPfC-gzGzoHsz", "jGadrhLEJ3nk9r0lPSQaCdLv")
+        logging.basicConfig(level=logging.DEBUG)
 
     def parse(self, response):
         if response.status != 200 or len(response.text) == 0:

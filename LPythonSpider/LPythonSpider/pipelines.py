@@ -24,3 +24,8 @@ class JsonWithEncodingPipeline(object):
 class LpythonspiderPipeline(object):
     def process_item(self, item, spider):
         return item
+
+class LpythonspiderPipeline_leancloud(object):
+    def process_item(self, item, spider):
+        print('item is %s'%item)
+        return item

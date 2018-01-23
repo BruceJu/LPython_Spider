@@ -19,84 +19,48 @@ NEWSPIDER_MODULE = 'LPythonSpider.spiders'
 BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'LPythonSpider'))
 
-USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0"
 
 RANDOM_UA_TYPE = "random"
-#
-
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'LPythonSpider (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 32
 
-# Configure a delay for requests for the same website (default: 0)
-# See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
-# See also autothrottle settings and docs
-DOWNLOAD_DELAY = 5
+
+DOWNLOAD_DELAY = 10
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
-
-# Disable cookies (enabled by default)
-#禁用GOOKIES
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_IP = 16
 COOKIES_ENABLED = False
-
-# Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
-
-# Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
-
-# Enable or disable spider middlewares
-# See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    'LPythonSpider.middlewares.LpythonspiderSpiderMiddleware': 543,
-#}
-
-# Enable or disable downloader middlewares
-# See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
    #'LPythonSpider.middlewares.LpythonspiderDownloaderMiddleware': 543,
    'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
 
 }
-
-# Enable or disable extensions
-# See https://doc.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
-
-# Ensure all spiders share same duplicates filter through redis.
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-# Configure item pipelines
-# See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+DUPEFILTER_DEBUG = False
 ITEM_PIPELINES = {
-   'LPythonSpider.pipelines.LpythonspiderPipeline_article_jobbole': 300,
+   #是否将item刷新至redis
    'scrapy_redis.pipelines.RedisPipeline': 400
 }
-
-# Enable and configure the AutoThrottle extension (disabled by default)
-# See https://doc.scrapy.org/en/latest/topics/autothrottle.html
-AUTOTHROTTLE_ENABLED = True
-# The initial download delay
+REDIS_URL = 'redis://root:@172.30.116.191:6379'
 AUTOTHROTTLE_START_DELAY = 5
-# The maximum download delay to be set in case of high latencies
+SCHEDULER_FLUSH_ON_START = True
+
+AUTOTHROTTLE_DEBUG = True
+
+AUTOTHROTTLE_ENABLED = True
+
 AUTOTHROTTLE_MAX_DELAY = 60
-# The average number of requests Scrapy should be sending in parallel to
-# each remote server
+
+SCHEDULER_IDLE_BEFORE_CLOSE = 30
+
 #AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
-# Enable showing throttling stats for every response received:
-AUTOTHROTTLE_DEBUG = False
+
+
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
@@ -105,4 +69,3 @@ AUTOTHROTTLE_DEBUG = False
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-REDIS_URL = 'redis://root:woshi007008@192.168.1.106:6379'

@@ -7,6 +7,7 @@
 import codecs
 import json
 import leancloud
+from twisted.internet.threads import deferToThread
 
 class JsonWithEncodingPipeline(object):
 
@@ -28,7 +29,9 @@ class LpythonspiderPipeline(object):
 
 class LpythonspiderPipeline_article_jobbole(object):
     def process_item(self, item, spider):
-        #TODO:目前这里是采用的是同步的方式进行的插入，后续需要改成异步的
+        return deferToThread(self._process_item, item, spider)
+    
+    def _process_item(self, item, spider):
         ArticJobbleObject = leancloud.Object.extend('ArticJobbleObject')
         jobble_object = ArticJobbleObject()
         jobble_object.set('thumb', item['thumb'])

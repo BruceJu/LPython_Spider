@@ -15,7 +15,6 @@ class SpiderConfig(object):
             self._redis_port = configjson['redis_port']
             self._jobbole_redis_key = configjson['jobbole_redis_key']
             self._jobbole_push_url = configjson['jobbole_push_url']
-            self._ProxyIPPool = configjson['ProxyIPPool']
         finally:
             print 'close file'
             self.config.close()
@@ -53,14 +52,6 @@ class SpiderConfig(object):
     @jobbole_push_url.setter
     def change_default_jobbole_push_url(self,value):
         self._jobbole_push_url = value
-
-    @property
-    def ProxyIPPool(self):
-        return self._ProxyIPPool
-
-    @ProxyIPPool.setter
-    def change_defaule_ProxyIPPool(self,value):
-        self._ProxyIPPool = value
 
 spiderConfig = SpiderConfig()
 

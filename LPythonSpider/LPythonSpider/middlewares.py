@@ -110,6 +110,7 @@ class RandomUserAgentMiddlware(object):
     def __init__(self, crawler):
         super(RandomUserAgentMiddlware, self).__init__()
         self.ua = UserAgent()
+        self.host = 'http://{0}:8000/?types=0&count=20&country=国内'
         self.ua_type = crawler.settings.get("RANDOM_UA_TYPE", "random")
 
     @classmethod
@@ -121,8 +122,9 @@ class RandomUserAgentMiddlware(object):
             return getattr(self.ua, self.ua_type)
         randomua = get_ua()
         request.headers.setdefault('User-Agent', randomua)
-        IPProxyURL = spiderConfig.ProxyIPPool
-        proxy = QueryRandomIP(IPProxyURL)
+        proxy_host = spiderConfig.redis_host
+        request_proxy_url = self.host.format(proxy_host)
+        proxy = QueryRandomIP(request_proxy_url)
         print 'random ip is %s' % proxy['http']
         print 'random ua is %s' % randomua
         request.meta['proxy'] = proxy['http']

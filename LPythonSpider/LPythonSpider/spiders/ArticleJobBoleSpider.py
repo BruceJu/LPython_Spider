@@ -14,10 +14,12 @@ from scrapy_redis.spiders import RedisSpider
 from ..RedisPush import RedisManager
 from ..Util import common
 from ..items import ArticleItemLoader, LpythonspiderItem
+from ..config import spiderConfig
 
 class ArticlejobbolespiderSpider(RedisSpider):
     name = 'LPythonSpider'
     already_push_all_request = False
+    redis_key = spiderConfig.jobbole_redis_key
 
     def __init__(self, callbackUrl=None, **kwargs):
         super(ArticlejobbolespiderSpider, self).__init__()

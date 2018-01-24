@@ -1,5 +1,5 @@
 {
-  "redis_host" : "172.30.116.191",
+  "redis_host" : "172.30.113.3",
   "redis_port" : 6379,
   "jobbole_redis_key" :"jobbole:starturl",
   "jobbole_push_url":"http://python.jobbole.com/all-posts",

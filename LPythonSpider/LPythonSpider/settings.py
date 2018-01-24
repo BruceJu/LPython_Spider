@@ -10,6 +10,7 @@
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 import sys
 import os
+from config import SpiderConfig
 
 BOT_NAME = 'LPythonSpider'
 
@@ -18,7 +19,6 @@ NEWSPIDER_MODULE = 'LPythonSpider.spiders'
 
 BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'LPythonSpider'))
-
 
 RANDOM_UA_TYPE = "random"
 
@@ -46,7 +46,12 @@ ITEM_PIPELINES = {
    #是否将item刷新至redis
    'scrapy_redis.pipelines.RedisPipeline': 400
 }
-REDIS_URL = 'redis://root:@172.30.116.191:6379'
+config = SpiderConfig.getInstance()
+
+REDIS_HOST = config.redis_host
+
+REDIS_PORT = config.redis_port
+
 AUTOTHROTTLE_START_DELAY = 5
 SCHEDULER_FLUSH_ON_START = True
 

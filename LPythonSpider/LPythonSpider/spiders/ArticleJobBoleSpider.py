@@ -5,36 +5,19 @@
 '''
 import logging
 import threading
-
 import leancloud
 from scrapy import log
 from scrapy import signals
 from scrapy.http import Request
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy_redis.spiders import RedisSpider
-
 from ..RedisPush import RedisManager
 from ..Util import common
 from ..items import ArticleItemLoader, LpythonspiderItem
 
-
 class ArticlejobbolespiderSpider(RedisSpider):
     name = 'LPythonSpider'
-    redis_key = 'jobbole:starturl'
     already_push_all_request = False
-    # deny_list = (r'http://python.jobbole.com/category/[a-z]{1,}/'
-    #              ,r'http://python.jobbole.com/[1-9]\d*/'
-    #              ,r'http://python.jobbole.com/[1-9]\d*/#tab[1-9]\d*'
-    #              ,r'http://python.jobbole.com/category/basic/'
-    #              ,r'http://hao.jobbole.com/?catid=[1-9]\d*/')
-    # page_index = LinkExtractor(allow=r"http://python.jobbole.com/all-posts/",deny=r'http://python.jobbole.com/[1-9]\d*/')
-    # page_link =LinkExtractor(allow=r"http://python.jobbole.com/page/\d+/",deny=r'http://python.jobbole.com/[1-9]\d*/')
-    # rules = (
-    #     Rule(LinkExtractor(allow=r'http://python.jobbole.com/'),follow=True),
-    #     Rule(LinkExtractor(deny=deny_list)),
-    #     Rule(page_index, callback='parse_page'),
-    #     Rule(page_link, callback='parse_page'),
-    # )
 
     def __init__(self, callbackUrl=None, **kwargs):
         super(ArticlejobbolespiderSpider, self).__init__()

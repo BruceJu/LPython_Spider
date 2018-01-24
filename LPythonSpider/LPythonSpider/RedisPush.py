@@ -4,7 +4,7 @@ import redis
 import threading
 import time
 from scrapy import log
-
+from config import SpiderConfig
 class Singleton(object):
     _instance = None
     def __new__(cls, *args, **kw):
@@ -14,7 +14,8 @@ class Singleton(object):
 
 class RedisManager(Singleton):
     def __init__(self):
-        self.redis_server = redis.Redis(host='172.30.116.191', port=6379)
+        self.config = SpiderConfig.getInstance()
+        self.redis_server = redis.Redis(host=self.config.redis_host, port=self.config.redis_port)
         if self.redis_server.ping():
             log.logger.info('connect redis-server successful!!!')
         else:
@@ -28,6 +29,7 @@ class RedisManager(Singleton):
             for key in keylist:
                 print('now redis key is %s'%key)
             time.sleep(10)
+
     def doPop(self):
         i=0
         while i<1:
@@ -37,12 +39,11 @@ class RedisManager(Singleton):
 
     def doClear(self):
         self.redis_server.flushall()
-
         print 'clear all commpleted Bye'
 
     def doInitPush(self):
         try:
-            self.redis_server.lpush('jobbole:starturl', 'http://python.jobbole.com/all-posts')
+            self.redis_server.lpush(self.config.jobbole_redis_key, self.config.jobbole_push_url)
             print "写入url成功!"
             thread = threading.Thread(target=self.doQuery, args=(), name='thread-redis')
             thread.start()

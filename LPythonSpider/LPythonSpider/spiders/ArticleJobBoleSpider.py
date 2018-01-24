@@ -97,18 +97,7 @@ class ArticlejobbolespiderSpider(RedisSpider):
             itemloader.add_value('object_id',articleobjectid)
             yield itemloader.load_item()
 
-
-        # # 单页面解析完成，开始构建下一页的数据
-        # next_page_link = response.xpath('//div[@class="grid-8"]/div[@class="navigation margin-20"]/a[@class="next page-numbers"]/@href').extract_first()
-        #
-        # if next_page_link is None or len(next_page_link) == 0:
-        #     log.logger.info('completed all page request')
-        #
-        # else:
-        #     log.logger.info('will request next page and request url is %s'%next_page_link)
-        #     yield Request(url=next_page_link)
         if self.already_push_all_request is not True:
-            print('确保只添加一次')
             page_list_html_a = response.xpath('//div[@class="grid-8"]/div[@class="navigation margin-20"]/a[@class="page-numbers"]')
             last_page_list_html_a = page_list_html_a[-1]
             last_page_index = last_page_list_html_a.xpath('text()').extract_first()
@@ -119,7 +108,7 @@ class ArticlejobbolespiderSpider(RedisSpider):
             next_page_index = 2
             while next_page_index <= last_index_number:
                 next_page_request_url = format_url.format(next_page_index)
-                print('确保只添加一次url is %s'%next_page_request_url)
+                print(' will lpush to redis and url is %s'%next_page_request_url)
                 yield Request(url=next_page_request_url)
                 next_page_index += 1
             self.already_push_all_request = True

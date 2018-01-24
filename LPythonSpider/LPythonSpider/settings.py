@@ -35,7 +35,8 @@ DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 DUPEFILTER_DEBUG = False
 ITEM_PIPELINES = {
    #是否将item刷新至redis
-   'scrapy_redis.pipelines.RedisPipeline': 400
+   'scrapy_redis.pipelines.RedisPipeline': 400,
+   'LPythonSpider.pipelines.Lpythonspider_article_jobbole':300
 }
 
 REDIS_HOST = spiderConfig.redis_host

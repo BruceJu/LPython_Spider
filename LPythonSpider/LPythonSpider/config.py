@@ -19,8 +19,6 @@ class SpiderConfig(object):
             print 'close file'
             self.config.close()
 
-
-
     @property
     def redis_host(self):
         return self._redis_host

@@ -23,6 +23,17 @@ class RedisManager(Singleton):
 
             raise Exception
 
+    def doInitPush(self):
+        try:
+            self.redis_server.lpush(self.config.jobbole_redis_key, self.config.jobbole_push_url)
+            print "写入url成功!"
+            thread = threading.Thread(target=self.doQuery, args=(), name='thread-redis')
+            thread.start()
+            thread.join(120)
+            print "completed Bye "
+        except Exception:
+            print "写入失败"
+
     def doQuery(self):
         while True:
             keylist = self.redis_server.keys('*')
@@ -41,16 +52,6 @@ class RedisManager(Singleton):
         self.redis_server.flushall()
         print 'clear all commpleted Bye'
 
-    def doInitPush(self):
-        try:
-            self.redis_server.lpush(self.config.jobbole_redis_key, self.config.jobbole_push_url)
-            print "写入url成功!"
-            thread = threading.Thread(target=self.doQuery, args=(), name='thread-redis')
-            thread.start()
-            thread.join(120)
-            print "completed Bye "
-        except Exception:
-            print "写入失败"
 
     def doRequestPush(self,key,value):
            if self.redis_server is None:

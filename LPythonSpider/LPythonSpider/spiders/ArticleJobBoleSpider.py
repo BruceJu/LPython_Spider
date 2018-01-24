@@ -11,7 +11,7 @@ from scrapy import signals
 from scrapy.http import Request
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy_redis.spiders import RedisSpider
-from ..RedisPush import RedisManager
+from ..RedisHelper import RedisManager
 from ..Util import common
 from ..items import ArticleItemLoader, LpythonspiderItem
 from ..config import spiderConfig
@@ -20,6 +20,19 @@ class ArticlejobbolespiderSpider(RedisSpider):
     name = 'LPythonSpider'
     already_push_all_request = False
     redis_key = spiderConfig.jobbole_redis_key
+    #TODO:问题1.路径应用方式和编码不同导致的，在不同平台上无法运行的bug
+
+    #TODO:问题2.爬取过程中，由于代理IP的无效导致的404爬取页面的收集
+
+    #TODO:问题3.由于有些页面没有封封会导致，进入管道时，数据无法正常使用入库的问题
+
+    #TODO:问题4.爬取完成后，如何关闭爬虫
+
+    #TODO:问题5 爬虫发生错误时响应，并以邮件的形式通知,这里补充发送邮件的逻辑
+
+    #TODO:问题6 如何避免每次启动重复爬取
+
+    #TODO:问题7 服务化
 
     def __init__(self, callbackUrl=None, **kwargs):
         super(ArticlejobbolespiderSpider, self).__init__()
@@ -36,7 +49,6 @@ class ArticlejobbolespiderSpider(RedisSpider):
         self.redis_manager = RedisManager()
 
     def spider_error_receiver(self):
-        # TODO:爬虫发生错误时响应，并以邮件的形式通知,这里补充发送邮件的逻辑
         self.logger.info('!!!!!!!!!!!!!!!!!!!!!!!Error!!!!!!!!!!!!!!!!!!!!!')
         pass
 

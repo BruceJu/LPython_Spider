@@ -27,7 +27,7 @@ class LpythonspiderPipeline(object):
     def process_item(self, item, spider):
         return item
 
-class LpythonspiderPipeline_article_jobbole(object):
+class Lpythonspider_article_jobbole(object):
     def process_item(self, item, spider):
         return deferToThread(self._process_item, item, spider)
     

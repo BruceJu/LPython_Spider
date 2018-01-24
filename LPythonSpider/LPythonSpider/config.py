@@ -6,14 +6,16 @@ import os
 
 class SpiderConfig(object):
     def __init__(self):
+        print('test init count ')
         try:
             BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
             self.config = codecs.open(BASE_DIR + '\LPythonSpider\config.json', 'rb', 'utf-8')
-            configjson = json.load(self.config, 'uft-8')
+            configjson = json.load(self.config,'uft-8')
             self._redis_host = configjson['redis_host']
             self._redis_port = configjson['redis_port']
             self._jobbole_redis_key = configjson['jobbole_redis_key']
             self._jobbole_push_url = configjson['jobbole_push_url']
+            self._ProxyIPPool = configjson['ProxyIPPool']
         finally:
             print 'close file'
             self.config.close()
@@ -52,15 +54,13 @@ class SpiderConfig(object):
     def change_default_jobbole_push_url(self,value):
         self._jobbole_push_url = value
 
-    @staticmethod
-    def getInstance():
-        return SpiderConfig()
+    @property
+    def ProxyIPPool(self):
+        return self._ProxyIPPool
 
-if __name__ == '__main__':
-     obj = SpiderConfig.getInstance()
-     print obj.redis_port
-     print obj.redis_host
-     print obj.jobbole_push_url
-     print obj.jobbole_redis_key
-     obj.change_defaule_redis_port = 5555
-     print obj.redis_port
+    @ProxyIPPool.setter
+    def change_defaule_ProxyIPPool(self,value):
+        self._ProxyIPPool = value
+
+spiderConfig = SpiderConfig()
+

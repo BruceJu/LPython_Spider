@@ -8,6 +8,7 @@
 from scrapy import signals
 from fake_useragent import UserAgent
 from Util.common import QueryRandomIP
+from config import spiderConfig
 
 
 class LpythonspiderSpiderMiddleware(object):
@@ -120,7 +121,8 @@ class RandomUserAgentMiddlware(object):
             return getattr(self.ua, self.ua_type)
         randomua = get_ua()
         request.headers.setdefault('User-Agent', randomua)
-        proxy = QueryRandomIP()
+        IPProxyURL = spiderConfig.ProxyIPPool
+        proxy = QueryRandomIP(IPProxyURL)
         print 'random ip is %s' % proxy['http']
         print 'random ua is %s' % randomua
         request.meta['proxy'] = proxy['http']

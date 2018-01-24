@@ -10,8 +10,7 @@
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 import sys
 import os
-from config import SpiderConfig
-
+from config import spiderConfig
 BOT_NAME = 'LPythonSpider'
 
 SPIDER_MODULES = ['LPythonSpider.spiders']
@@ -46,11 +45,10 @@ ITEM_PIPELINES = {
    #是否将item刷新至redis
    'scrapy_redis.pipelines.RedisPipeline': 400
 }
-config = SpiderConfig.getInstance()
 
-REDIS_HOST = config.redis_host
+REDIS_HOST = spiderConfig.redis_host
 
-REDIS_PORT = config.redis_port
+REDIS_PORT = spiderConfig.redis_port
 
 AUTOTHROTTLE_START_DELAY = 5
 SCHEDULER_FLUSH_ON_START = True

@@ -16,8 +16,8 @@ def get_md5(urls):
     m.update(url)
     return m.hexdigest()
 
-def QueryRandomIP():
-    r = requests.get(u'http://172.30.116.191:8000/?types=0&count=20&country=国内')
+def QueryRandomIP(address):
+    r = requests.get(url=address)
     ip_ports = json.loads(r.text)
     index = random.randint(0, len(ip_ports) - 1)
     ip = ip_ports[index][0]

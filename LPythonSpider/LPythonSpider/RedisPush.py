@@ -4,7 +4,7 @@ import redis
 import threading
 import time
 from scrapy import log
-from config import SpiderConfig
+from config import spiderConfig
 class Singleton(object):
     _instance = None
     def __new__(cls, *args, **kw):
@@ -14,7 +14,7 @@ class Singleton(object):
 
 class RedisManager(Singleton):
     def __init__(self):
-        self.config = SpiderConfig.getInstance()
+        self.config = spiderConfig
         self.redis_server = redis.Redis(host=self.config.redis_host, port=self.config.redis_port)
         if self.redis_server.ping():
             log.logger.info('connect redis-server successful!!!')

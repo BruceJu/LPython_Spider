@@ -2,5 +2,6 @@
   "redis_host" : "172.30.116.191",
   "redis_port" : 6379,
   "jobbole_redis_key" :"jobbole:starturl",
-  "jobbole_push_url":"http://python.jobbole.com/all-posts"
+  "jobbole_push_url":"http://python.jobbole.com/all-posts",
+  "ProxyIPPool":"http://172.30.116.191:8000/?types=0&count=20&country=国内"
 }

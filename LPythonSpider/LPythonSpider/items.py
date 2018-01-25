@@ -12,8 +12,8 @@ from scrapy.loader.processors import TakeFirst, MapCompose
 
 
 def remove_date_spot(value):
-    if " ·" in value:
-        return value.replace(" ·",'')
+    if u" ·" in value:
+        return value.replace(u" ·",u'')
 
     else:
         return value

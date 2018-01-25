@@ -9,7 +9,9 @@ class SpiderConfig(object):
         print('test init count ')
         try:
             BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-            self.config = codecs.open(BASE_DIR + '\LPythonSpider\config.json', 'rb', 'utf-8')
+            LPYTHONSPIDER = os.path.join(BASE_DIR, 'LPythonSpider')
+            CONFIG_FILE = os.path.join(LPYTHONSPIDER, 'config.json')
+            self.config = codecs.open(CONFIG_FILE, 'rb', 'utf-8')
             configjson = json.load(self.config,'uft-8')
             self._redis_host = configjson['redis_host']
             self._redis_port = configjson['redis_port']

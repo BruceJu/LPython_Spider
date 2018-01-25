@@ -106,6 +106,15 @@ class RedisManager(Singleton):
             print "写入失败"
 ```  
 ##### 问题.配置文件操作类的路径引用方式和字符串编码不同导致的，在不同平台上无法运行的bug
+>* 在操作 `config.json`时，由于使用的路径中使用了`\`,导致了在Linux上会报错.
+>* 例如`\LPythonSpider\config.json`这样的写法在Windows上可以运行，但是在Linux上就会报错
+>* 针对这个问题，要使用os模块来引用路径，代码如下
+```python
+   BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+   LPYTHONSPIDER = os.path.join(BASE_DIR, 'LPythonSpider')
+   CONFIG_FILE = os.path.join(LPYTHONSPIDER, 'config.json')
+   self.config = codecs.open(CONFIG_FILE, 'rb', 'utf-8')
+```
 
 ##### 问题.爬取过程中，由于代理IP的无效导致的404爬取页面的收集
 

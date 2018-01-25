@@ -156,9 +156,17 @@ class RedisManager(Singleton):
 
 
 
-#### 问题.由于个别item的key不存在造成该条item异常，导致数据无法正常使用入库的问题
 
-#### 问题.分布式架构爬取完成后，如何关闭爬虫
+#####  问题.分布式架构爬取完成后，如何关闭爬虫
+>* 针对这个问题，我目前采用的是使用Scrapy的 `EXTENSIONS` 中的`CloseSpider`
+>* 当爬虫处于空闲状态时，超过了设定的时间范围，自动关闭。
+>* 目前设置的值是120秒，部分代码如下
+```python
+EXTENSIONS = {
+    'scrapy.exceptions.CloseSpider':500
+}
+CLOSESPIDER_TIMEOUT = 120
+```
     
 #### 问题.爬虫发生错误时如何及时响应，并以邮件的形式通知,这里补充发送邮件的逻辑
 

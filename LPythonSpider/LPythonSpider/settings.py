@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
-
-# Scrapy settings for LPythonSpider project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://doc.scrapy.org/en/latest/topics/settings.html
-#     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 import sys
 import os
 from config import spiderConfig
+import arrow
+
 BOT_NAME = 'LPythonSpider'
 
 SPIDER_MODULES = ['LPythonSpider.spiders']
@@ -25,27 +18,44 @@ DOWNLOAD_DELAY = 10
 CONCURRENT_REQUESTS_PER_DOMAIN = 16
 CONCURRENT_REQUESTS_PER_IP = 16
 COOKIES_ENABLED = False
+
 DOWNLOADER_MIDDLEWARES = {
-   #'LPythonSpider.middlewares.LpythonspiderDownloaderMiddleware': 543,
    'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
+   'LPythonSpider.middlewares.InvalidResponseRetryRecordMiddleware':400
 
 }
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-DUPEFILTER_DEBUG = False
 ITEM_PIPELINES = {
    #是否将item刷新至redis
    'scrapy_redis.pipelines.RedisPipeline': 400,
    'LPythonSpider.pipelines.Lpythonspider_article_jobbole':300
 }
 
+#无效Response重试和收集中间件的配置项
+RETRY_ENABLED = True
+RETRY_TIMES = 2
+RETRY_HTTP_CODES = [404,403]
+#分布式配置项目
 REDIS_HOST = spiderConfig.redis_host
 REDIS_PORT = spiderConfig.redis_port
-AUTOTHROTTLE_START_DELAY = 5
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+DUPEFILTER_DEBUG = False
 SCHEDULER_FLUSH_ON_START = True
+SCHEDULER_IDLE_BEFORE_CLOSE = 30
+
+
+#自动优化加载速度的优化项
+AUTOTHROTTLE_START_DELAY = 5
 AUTOTHROTTLE_DEBUG = True
 AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_MAX_DELAY = 60
-SCHEDULER_IDLE_BEFORE_CLOSE = 30
-LOG_FILE='Spiderun.log'
+
+#日志文件输出配置项目
+local = arrow.now()
+LOG_FILE_NAME = 'Run-log-{0}.log'.format(local.format('YYYY-MM-DD'))
+LOG_FILE = LOG_FILE_NAME
+#为 True，进程所有的标准输出(及错误)将会被重定向到log中(包括Print的输出)
+LOG_STDOUT =True
+
+
 

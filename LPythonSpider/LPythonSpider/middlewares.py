@@ -21,7 +21,7 @@ from scrapy.exceptions import NotConfigured
 from scrapy.utils.response import response_status_message
 from scrapy.core.downloader.handlers.http11 import TunnelError
 from scrapy.utils.python import global_object_name
-from helper.RedisHelper import RedisManager
+from helper.RedisHelper import redisManager
 
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ class RandomUserAgentMiddlware(object):
     def __init__(self, crawler):
         super(RandomUserAgentMiddlware, self).__init__()
         self.ua = UserAgent()
-        self.host = 'http://{0}:8000/?types=0&count=20&country=国内'
+        self.host = 'http://{0}:8000/?types=0&count=60&country=国内'
         self.ua_type = crawler.settings.get("RANDOM_UA_TYPE", "random")
 
     @classmethod
@@ -68,7 +68,7 @@ class InvalidResponseHandlerMiddleware(object):
         self.retry_http_codes = set(int(x) for x in settings.getlist('RETRY_HTTP_CODES'))
         self.priority_adjust = settings.getint('RETRY_PRIORITY_ADJUST')
         self.default_serialize = ScrapyJSONEncoder().encode
-        self.server = RedisManager.doGetServer()
+        self.server = redisManager.doGetServer()
 
 
     @classmethod

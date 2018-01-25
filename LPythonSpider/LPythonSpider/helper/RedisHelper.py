@@ -69,7 +69,7 @@ class RedisManager(Singleton):
            list_len = self.redis_server.lpush(key,value)
            logger.info(list_len)
 
-RedisManager = RedisManager()
+redisManager = RedisManager()
 
 if __name__ == '__main__':
     RedisManager = RedisManager()

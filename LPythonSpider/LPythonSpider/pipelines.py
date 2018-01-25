@@ -8,6 +8,7 @@ import codecs
 import json
 import leancloud
 from twisted.internet.threads import deferToThread
+from scrapy.utils.serialize import ScrapyJSONEncoder
 
 
 class JsonWithEncodingPipeline(object):
@@ -29,22 +30,18 @@ class LpythonspiderPipeline(object):
         return item
 
 class Lpythonspider_article_jobbole(object):
+
+    def __init__(self):
+        self.default_serialize = ScrapyJSONEncoder().encode
+
     def process_item(self, item, spider):
         return deferToThread(self._process_item, item, spider)
     
     def _process_item(self, item, spider):
         ArticJobbleObject = leancloud.Object.extend('ArticJobbleObject')
         jobble_object = ArticJobbleObject()
-        if item['thumb'] is None:
-            jobble_object.set('thumb','No cover')
-        else:
-            jobble_object.set('thumb', item['thumb'])
+        data =self.default_serialize(item)
+        for key, value in item.items():
+            jobble_object.set(key=str(key),value=value)
 
-        jobble_object.set('title', item['title'])
-        jobble_object.set('date', item['date'])
-        jobble_object.set('type', item['type'])
-        jobble_object.set('summary', item['summary'])
-        jobble_object.set('link', item['link'])
-        jobble_object.set('object_id', item['object_id'])
-        jobble_object.save()
         return item

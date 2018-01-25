@@ -22,13 +22,13 @@ class ArticlejobbolespiderSpider(RedisSpider):
     name = 'LPythonSpider'
     already_push_all_request = False
     redis_key = spiderConfig.jobbole_redis_key
-    #TODO:问题1.路径应用方式和编码不同导致的，在不同平台上无法运行的bug
+    #Fix:问题1.路径应用方式和编码不同导致的，在不同平台上无法运行的bug
 
-    #TODO:问题2.爬取过程中，由于代理IP的无效导致的404爬取页面的收集
+    #Fix:问题2.爬取过程中，由于代理IP的无效导致的404爬取页面的收集
 
-    #TODO:问题3.由于有些页面没有封封会导致，进入管道时，数据无法正常使用入库的问题
+    #Fix:问题3.由于有些页面没有封面封会导致，进入管道时，数据无法正常使用入库的问题
 
-    #TODO:问题4.爬取完成后，如何关闭爬虫
+    #Fix:问题4.爬取完成后，如何关闭爬虫
 
     #TODO:问题5 爬虫发生错误时响应，并以邮件的形式通知,这里补充发送邮件的逻辑
 

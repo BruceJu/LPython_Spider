@@ -17,6 +17,7 @@ class SpiderConfig(object):
             self._redis_port = configjson['redis_port']
             self._jobbole_redis_key = configjson['jobbole_redis_key']
             self._jobbole_push_url = configjson['jobbole_push_url']
+            self._invalidResponseMessageFileName = configjson['InvalidResponseMessageFileName']
         finally:
             print 'close file'
             self.config.close()
@@ -44,6 +45,14 @@ class SpiderConfig(object):
     @jobbole_redis_key.setter
     def change_default_jobbole_redis_key(self,value):
         self._jobbole_redis_key = value
+
+    @property
+    def InvalidResponseMessageFileName(self):
+        return self._invalidResponseMessageFileName
+
+    @InvalidResponseMessageFileName.setter
+    def change_default_InvalidResponseMessag_eFileName(self,value):
+        self._invalidResponseMessageFileName = value
 
     @property
     def jobbole_push_url(self):

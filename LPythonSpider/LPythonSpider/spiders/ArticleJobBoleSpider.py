@@ -15,6 +15,8 @@ from ..RedisHelper import RedisManager
 from ..Util import common
 from ..items import ArticleItemLoader, LpythonspiderItem
 from ..config import spiderConfig
+logger = logging.getLogger(__name__)
+
 
 class ArticlejobbolespiderSpider(RedisSpider):
     name = 'LPythonSpider'
@@ -73,8 +75,11 @@ class ArticlejobbolespiderSpider(RedisSpider):
             itemloader = ArticleItemLoader(response=response, item=LpythonspiderItem())
 
             articlethumb = Article.xpath('./div[@class="post-thumb"]/a/img/@src').extract()
-            itemloader.add_value('thumb',articlethumb)
-
+            if articlethumb is None:
+                logger.info('cur article no cover')
+                itemloader.add_value('thumb','No cover')
+            else:
+                itemloader.add_value('thumb',articlethumb)
             articletitle = Article.xpath('./div[@class="post-meta"]/p/a[@class="archive-title"]/text()').extract()
             itemloader.add_value('title', articletitle)
 

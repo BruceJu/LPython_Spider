@@ -3,8 +3,10 @@
 import redis
 import threading
 import time
-from scrapy import log
 from config import spiderConfig
+import logging
+logger = logging.getLogger(__name__)
+
 class Singleton(object):
     _instance = None
     def __new__(cls, *args, **kw):
@@ -17,9 +19,9 @@ class RedisManager(Singleton):
         self.config = spiderConfig
         self.redis_server = redis.Redis(host=self.config.redis_host, port=self.config.redis_port)
         if self.redis_server.ping():
-            log.logger.info('connect redis-server successful!!!')
+            logger.info('connect redis-server successful!!!')
         else:
-            log.logger.info('connect redis-server fail!!!')
+            logger.info('connect redis-server fail!!!')
 
             raise Exception
 
@@ -55,10 +57,10 @@ class RedisManager(Singleton):
 
     def doRequestPush(self,key,value):
            if self.redis_server is None:
-               log.logger.info('redis-server valid!!!!!')
+               logger.info('redis-server valid!!!!!')
                return
            list_len = self.redis_server.lpush(key,value)
-           log.logger.info(list_len)
+           logger.info(list_len)
 
 if __name__ == '__main__':
     redisManager = RedisManager()

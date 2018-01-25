@@ -6,7 +6,6 @@
 import logging
 import threading
 import leancloud
-from scrapy import log
 from scrapy import signals
 from scrapy.http import Request
 from scrapy.xlib.pydispatch import dispatcher
@@ -63,12 +62,12 @@ class ArticlejobbolespiderSpider(RedisSpider):
 
     def parse(self, response):
         if response.status != 200 or len(response.text) == 0:
-            log.logger.error('Current response is invalid')
+            logger.error('Current response is invalid')
             return
         #解析当前响应数据的标题
         ArticlePage = response.xpath('//div[@class="grid-8"]/div[@class="post floated-thumb"]')
         if ArticlePage is not None:
-            log.logger.info('Current artticle list len is {0} and type is {1}'.format(len(ArticlePage),type(ArticlePage)))
+            logger.info('Current artticle list len is {0} and type is {1}'.format(len(ArticlePage),type(ArticlePage)))
 
         #解析
         for Article in ArticlePage:

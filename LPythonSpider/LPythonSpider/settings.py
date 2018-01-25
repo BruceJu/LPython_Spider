@@ -21,7 +21,7 @@ COOKIES_ENABLED = False
 
 DOWNLOADER_MIDDLEWARES = {
    'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
-   'LPythonSpider.middlewares.InvalidResponseRetryRecordMiddleware':400
+   'LPythonSpider.middlewares.InvalidResponseHandlerMiddleware':543
 
 }
 ITEM_PIPELINES = {
@@ -29,6 +29,11 @@ ITEM_PIPELINES = {
    'scrapy_redis.pipelines.RedisPipeline': 400,
    'LPythonSpider.pipelines.Lpythonspider_article_jobbole':300
 }
+
+EXTENSIONS = {
+    'scrapy.exceptions.CloseSpider':500
+}
+CLOSESPIDER_TIMEOUT = 120
 
 #无效Response重试和收集中间件的配置项
 RETRY_ENABLED = True
@@ -51,11 +56,11 @@ AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_MAX_DELAY = 60
 
 #日志文件输出配置项目
-# local = arrow.now()
-# LOG_FILE_NAME = 'Run-log-{0}.log'.format(local.format('YYYY-MM-DD'))
-# LOG_FILE = LOG_FILE_NAME
-# #为 True，进程所有的标准输出(及错误)将会被重定向到log中(包括Print的输出)
-# LOG_STDOUT =True
+local = arrow.now()
+LOG_FILE_NAME = 'Run-log-{0}.log'.format(local.format('YYYY-MM-DD'))
+LOG_FILE = LOG_FILE_NAME
+#为 True，进程所有的标准输出(及错误)将会被重定向到log中(包括Print的输出)
+LOG_STDOUT =True
 
 
 

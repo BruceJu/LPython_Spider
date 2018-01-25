@@ -54,7 +54,7 @@ class RandomUserAgentMiddlware(object):
         request.meta['proxy'] = proxy['http']
 
 
-class InvalidResponseRetryRecordMiddleware(object):
+class InvalidResponseHandlerMiddleware(object):
 
     # IOError is raised by the HttpCompression middleware when trying to
     # decompress an empty response

@@ -34,7 +34,11 @@ class Lpythonspider_article_jobbole(object):
     def _process_item(self, item, spider):
         ArticJobbleObject = leancloud.Object.extend('ArticJobbleObject')
         jobble_object = ArticJobbleObject()
-        jobble_object.set('thumb', item['thumb'])
+        if item['thumb'] is None:
+            jobble_object.set('thumb','No cover')
+        else:
+            jobble_object.set('thumb', item['thumb'])
+
         jobble_object.set('title', item['title'])
         jobble_object.set('date', item['date'])
         jobble_object.set('type', item['type'])

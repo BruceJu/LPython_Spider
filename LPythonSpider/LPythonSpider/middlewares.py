@@ -95,11 +95,15 @@ class InvalidResponseRetryRecordMiddleware(object):
     def spider_closed(self, spider):
         spider.logger.info('Spider close: %s' % spider.name)
         content = self.record_file.read()
-        if len(content) == 0:
-            logger.debug('All Response are valid and will remove InvalidResponseMessageFile')
+        try:
+            if len(content) == 0:
+                logger.debug('All Response are valid and will remove InvalidResponseMessageFile')
+                self.record_file.close()
+                os.remove(spiderConfig.InvalidResponseMessageFileName)
             self.record_file.close()
-            os.remove(spiderConfig.InvalidResponseMessageFileName)
-        self.record_file.close()
+        finally:
+            self.record_file.close()
+            logger.debug('an error when remove InvalidResponseMessageFile.json ')
 
     def _retry(self, request, reason, spider,response):
         retries = request.meta.get('retry_times', 0) + 1

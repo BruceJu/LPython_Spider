@@ -117,6 +117,44 @@ class RedisManager(Singleton):
 ```
 
 ##### 问题.爬取过程中，由于代理IP的无效导致的404爬取页面的收集
+> * 针对这个问题是按照这样的机制来操作的
+> * 首先针对无效的Response的进行重试。
+> * 当重试无效后，进行记录。
+> * 参考了scrapy的`Retry.py`这个中间件
+> * 在此基础上增加了，重试后仍然失败的页面的收集功能。
+> * 具体可参考`InvalidResponseRetryRecordMiddleware` 这个中间件
+> * 最后收集的结果是在`InvalidResponseMessage.json`(名字可通过ConfigHelper.py更改)下面这个样子的
+```json
+{"url": "http://www.dmoz.org/", "retries": 3, "reason": "403 Forbidden"}
+
+```
+> * 部分代码如下
+```python
+    def _retry(self, request, reason, spider,response):
+        retries = request.meta.get('retry_times', 0) + 1
+            .................此处省略........................
+        if 'max_retry_times' in request.meta:
+            retry_times = request.meta['max_retry_times']
+        if retries <= retry_times:
+            logger.debug("Retrying %(request)s (failed %(retries)d times): %(reason)s",
+                         {'request': request, 'retries': retries, 'reason': reason},
+                         extra={'spider': spider})
+            retryreq = request.copy()
+            retryreq.meta['retry_times'] = retries   
+             .................此处省略........................
+            stats.inc_value('retry/count')
+            stats.inc_value('retry/reason_count/%s' % reason)
+            return retryreq
+        else:
+            .................此处省略........................
+            reason = response_status_message(response.status)
+            dict_response = {'url': request.url, 'reason': reason, 'retries': retries}
+            lines = json.dumps(dict_response, ensure_ascii=False) + "\n"
+            self.record_file.write(lines)
+            return response
+```
+
+
 
 #### 问题.由于个别item的key不存在造成该条item异常，导致数据无法正常使用入库的问题
 

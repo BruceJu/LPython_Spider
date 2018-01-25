@@ -51,11 +51,11 @@ AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_MAX_DELAY = 60
 
 #日志文件输出配置项目
-local = arrow.now()
-LOG_FILE_NAME = 'Run-log-{0}.log'.format(local.format('YYYY-MM-DD'))
-LOG_FILE = LOG_FILE_NAME
-#为 True，进程所有的标准输出(及错误)将会被重定向到log中(包括Print的输出)
-LOG_STDOUT =True
+# local = arrow.now()
+# LOG_FILE_NAME = 'Run-log-{0}.log'.format(local.format('YYYY-MM-DD'))
+# LOG_FILE = LOG_FILE_NAME
+# #为 True，进程所有的标准输出(及错误)将会被重定向到log中(包括Print的输出)
+# LOG_STDOUT =True
 
 
 

@@ -69,11 +69,12 @@ class InvalidResponseRetryRecordMiddleware(object):
         self.max_retry_times = settings.getint('RETRY_TIMES')
         self.retry_http_codes = set(int(x) for x in settings.getlist('RETRY_HTTP_CODES'))
         self.priority_adjust = settings.getint('RETRY_PRIORITY_ADJUST')
+        self.record_file = codecs.open(spiderConfig.InvalidResponseMessageFileName, 'w', encoding="utf-8")
+        logger.debug('create a json file to record  Invalid Response Message ')
 
     @classmethod
     def from_crawler(cls, crawler):
         s = cls(crawler.settings)
-        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         crawler.signals.connect(s.spider_closed, signal=signals.spider_closed)
         return cls(crawler.settings)
 
@@ -90,19 +91,15 @@ class InvalidResponseRetryRecordMiddleware(object):
                 and not request.meta.get('dont_retry', False):
             return self._retry(request, exception, spider)
 
-    def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
-        logger.debug('create a json file to record  Invalid Response Message ')
-        self.file = codecs.open(spiderConfig.InvalidResponseMessageFileName, 'w', encoding="utf-8")
 
     def spider_closed(self, spider):
         spider.logger.info('Spider close: %s' % spider.name)
-        content = self.file.read()
+        content = self.record_file.read()
         if len(content) == 0:
             logger.debug('All Response are valid and will remove InvalidResponseMessageFile')
-            self.file.close()
+            self.record_file.close()
             os.remove(spiderConfig.InvalidResponseMessageFileName)
-        self.file.close()
+        self.record_file.close()
 
     def _retry(self, request, reason, spider,response):
         retries = request.meta.get('retry_times', 0) + 1
@@ -136,6 +133,6 @@ class InvalidResponseRetryRecordMiddleware(object):
             reason = response_status_message(response.status)
             dict_response = {'url': request.url, 'reason': reason, 'retries': retries}
             lines = json.dumps(dict_response, ensure_ascii=False) + "\n"
-            self.file.write(lines)
+            self.record_file.write(lines)
             return response
 

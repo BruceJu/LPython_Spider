@@ -4,23 +4,22 @@
 伯乐在线Python模块的Spider
 '''
 import logging
-import threading
-import leancloud
 from scrapy import signals
 from scrapy.http import Request
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy_redis.spiders import RedisSpider
-from ..RedisHelper import RedisManager
 from ..Util import common
 from ..items import ArticleItemLoader, LpythonspiderItem
-from ..config import spiderConfig
+#这里不要删除，否则leancloud无法初始化
+from ..helper.CloudServerHelper import CloudServerManager
+from ..helper.ConfigHelper import ConfigManager
 logger = logging.getLogger(__name__)
 
 
 class ArticlejobbolespiderSpider(RedisSpider):
     name = 'LPythonSpider'
     already_push_all_request = False
-    redis_key = spiderConfig.jobbole_redis_key
+    redis_key = ConfigManager.jobbole_redis_key
     #Fix:问题1.路径应用方式和编码不同导致的，在不同平台上无法运行的bug
 
     #Fix:问题2.爬取过程中，由于代理IP的无效导致的404爬取页面的收集
@@ -43,11 +42,6 @@ class ArticlejobbolespiderSpider(RedisSpider):
 
     def spider_open_receiver(self):
         self.logger.info('Notice!! !!!Spider is start')
-        #开启多线程去初始化LeanCloudSDK
-        init_sdk_thread = threading.Thread(target=self.init_leancloud_sdk,name='init_leancloud_sdk_thread')
-        init_sdk_thread.setDaemon(True)
-        init_sdk_thread.start()
-        self.redis_manager = RedisManager()
 
     def spider_error_receiver(self):
         self.logger.info('!!!!!!!!!!!!!!!!!!!!!!!Error!!!!!!!!!!!!!!!!!!!!!')
@@ -55,10 +49,6 @@ class ArticlejobbolespiderSpider(RedisSpider):
 
     def spider_closed_receiver(self):
         self.logger.info('Notice!! Spider is closed')
-
-    def init_leancloud_sdk(self):
-        leancloud.init("avjbAbAq3Tjsft3OXhDCHPfC-gzGzoHsz", "jGadrhLEJ3nk9r0lPSQaCdLv")
-        logging.basicConfig(level=logging.DEBUG)
 
     def parse(self, response):
         if response.status != 200 or len(response.text) == 0:

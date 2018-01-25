@@ -5,25 +5,23 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-
-import codecs
-import os
-import json
-from scrapy import signals
 import logging
+
 from fake_useragent import UserAgent
-from Util.common import QueryRandomIP
-from config import spiderConfig
+from scrapy.utils.serialize import ScrapyJSONEncoder
 from twisted.internet import defer
 from twisted.internet.error import TimeoutError, DNSLookupError, \
-        ConnectionRefusedError, ConnectionDone, ConnectError, \
-        ConnectionLost, TCPTimedOutError
+    ConnectionRefusedError, ConnectionDone, ConnectError, \
+    ConnectionLost, TCPTimedOutError
 from twisted.web.client import ResponseFailed
 
+from helper.ConfigHelper import ConfigManager
+from Util.common import QueryRandomIP
 from scrapy.exceptions import NotConfigured
 from scrapy.utils.response import response_status_message
 from scrapy.core.downloader.handlers.http11 import TunnelError
 from scrapy.utils.python import global_object_name
+from helper.RedisHelper import RedisManager
 
 
 logger = logging.getLogger(__name__)
@@ -46,7 +44,7 @@ class RandomUserAgentMiddlware(object):
             return getattr(self.ua, self.ua_type)
         randomua = get_ua()
         request.headers.setdefault('User-Agent', randomua)
-        proxy_host = spiderConfig.redis_host
+        proxy_host = ConfigManager.redis_host
         request_proxy_url = self.host.format(proxy_host)
         proxy = QueryRandomIP(request_proxy_url)
         print 'random ip is %s' % proxy['http']
@@ -69,13 +67,12 @@ class InvalidResponseHandlerMiddleware(object):
         self.max_retry_times = settings.getint('RETRY_TIMES')
         self.retry_http_codes = set(int(x) for x in settings.getlist('RETRY_HTTP_CODES'))
         self.priority_adjust = settings.getint('RETRY_PRIORITY_ADJUST')
-        self.record_file = codecs.open(spiderConfig.InvalidResponseMessageFileName, 'w', encoding="utf-8")
-        logger.debug('create a json file to record  Invalid Response Message ')
+        self.default_serialize = ScrapyJSONEncoder().encode
+        self.server = RedisManager.doGetServer()
+
 
     @classmethod
     def from_crawler(cls, crawler):
-        s = cls(crawler.settings)
-        crawler.signals.connect(s.spider_closed, signal=signals.spider_closed)
         return cls(crawler.settings)
 
     def process_response(self, request, response, spider):
@@ -91,19 +88,6 @@ class InvalidResponseHandlerMiddleware(object):
                 and not request.meta.get('dont_retry', False):
             return self._retry(request, exception, spider)
 
-
-    def spider_closed(self, spider):
-        spider.logger.info('Spider close: %s' % spider.name)
-        content = self.record_file.read()
-        try:
-            if len(content) == 0:
-                logger.debug('All Response are valid and will remove InvalidResponseMessageFile')
-                self.record_file.close()
-                os.remove(spiderConfig.InvalidResponseMessageFileName)
-            self.record_file.close()
-        finally:
-            self.record_file.close()
-            logger.debug('an error when remove InvalidResponseMessageFile.json ')
 
     def _retry(self, request, reason, spider,response):
         retries = request.meta.get('retry_times', 0) + 1
@@ -129,14 +113,17 @@ class InvalidResponseHandlerMiddleware(object):
             stats.inc_value('retry/count')
             stats.inc_value('retry/reason_count/%s' % reason)
             return retryreq
-        else:
+        elif self.server is not None:
             stats.inc_value('retry/max_reached')
             logger.debug("Gave up retrying %(request)s (failed %(retries)d times): %(reason)s",
                          {'request': request, 'retries': retries, 'reason': reason},
                          extra={'spider': spider})
             reason = response_status_message(response.status)
             dict_response = {'url': request.url, 'reason': reason, 'retries': retries}
-            lines = json.dumps(dict_response, ensure_ascii=False) + "\n"
-            self.record_file.write(lines)
-            return response
+            data = self.default_serialize(dict_response)
+            print '*' * 10 + 'record invaild request and url is %s'%request.url + '*'*10
+            RETRYT_KEY = '%(spider)s:invailrequest'
+            self.server.rpush(RETRYT_KEY, data)
+        return response
+
 

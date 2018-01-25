@@ -9,6 +9,7 @@ import json
 import leancloud
 from twisted.internet.threads import deferToThread
 
+
 class JsonWithEncodingPipeline(object):
 
     #自定义json文件的导出

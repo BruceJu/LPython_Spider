@@ -3,7 +3,7 @@
 import redis
 import threading
 import time
-from config import spiderConfig
+from ConfigHelper import ConfigManager
 import logging
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,8 @@ class Singleton(object):
 
 class RedisManager(Singleton):
     def __init__(self):
-        self.config = spiderConfig
+        print('*'*30+'Redis Helper init'+'*'*30)
+        self.config = ConfigManager
         self.redis_server = redis.Redis(host=self.config.redis_host, port=self.config.redis_port)
         if self.redis_server.ping():
             logger.info('connect redis-server successful!!!')
@@ -24,6 +25,12 @@ class RedisManager(Singleton):
             logger.info('connect redis-server fail!!!')
 
             raise Exception
+
+    def doGetServer(self):
+        if self.redis_server is not None and self.redis_server.ping():
+            return self.redis_server
+        else:
+            return None
 
     def doInitPush(self):
         try:
@@ -62,6 +69,8 @@ class RedisManager(Singleton):
            list_len = self.redis_server.lpush(key,value)
            logger.info(list_len)
 
+RedisManager = RedisManager()
+
 if __name__ == '__main__':
-    redisManager = RedisManager()
-    redisManager.doInitPush()
+    RedisManager = RedisManager()
+    RedisManager.doInitPush()

@@ -4,23 +4,22 @@ import codecs
 import json
 import os
 
-class SpiderConfig(object):
+class ConfigManager:
+
     def __init__(self):
-        print('test init count ')
+        print('*'*10+'ConfigManager init'+'*'*10)
         try:
-            BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-            LPYTHONSPIDER = os.path.join(BASE_DIR, 'LPythonSpider')
-            CONFIG_FILE = os.path.join(LPYTHONSPIDER, 'config.json')
-            self.config = codecs.open(CONFIG_FILE, 'rb', 'utf-8')
-            configjson = json.load(self.config,'uft-8')
+            self.BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+            self.CONFIG_FILE = os.path.join(self.BASE_DIR, 'config.json')
+            self.config_file = codecs.open(self.CONFIG_FILE, 'rb', 'utf-8')
+            configjson = json.load(self.config_file,'uft-8')
             self._redis_host = configjson['redis_host']
             self._redis_port = configjson['redis_port']
             self._jobbole_redis_key = configjson['jobbole_redis_key']
             self._jobbole_push_url = configjson['jobbole_push_url']
-            self._invalidResponseMessageFileName = configjson['InvalidResponseMessageFileName']
         finally:
-            print 'close file'
-            self.config.close()
+            print('*' * 10 + 'read config success!!! prepare close config file' + '*' * 10)
+            self.config_file.close()
 
     @property
     def redis_host(self):
@@ -47,14 +46,6 @@ class SpiderConfig(object):
         self._jobbole_redis_key = value
 
     @property
-    def InvalidResponseMessageFileName(self):
-        return self._invalidResponseMessageFileName
-
-    @InvalidResponseMessageFileName.setter
-    def change_default_InvalidResponseMessag_eFileName(self,value):
-        self._invalidResponseMessageFileName = value
-
-    @property
     def jobbole_push_url(self):
         return self._jobbole_push_url
 
@@ -62,5 +53,6 @@ class SpiderConfig(object):
     def change_default_jobbole_push_url(self,value):
         self._jobbole_push_url = value
 
-spiderConfig = SpiderConfig()
+
+ConfigManager = ConfigManager()
 

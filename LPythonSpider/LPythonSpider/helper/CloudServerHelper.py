@@ -2,6 +2,7 @@
 
 import threading
 import leancloud
+from ConfigHelper import ConfigManager
 
 '''
 leancloud 后端云操作类
@@ -17,6 +18,7 @@ class CloudServerManager:
     def init_leancloud_sdk(self):
         print('*' * 10 + 'CloudServerHelper init success!!!' + '*' * 10)
         leancloud.init("avjbAbAq3Tjsft3OXhDCHPfC-gzGzoHsz", "jGadrhLEJ3nk9r0lPSQaCdLv")
+        leancloud.init(ConfigManager.leancloud_key, ConfigManager.leancloud_secret)
 
 
 CloudServerManager = CloudServerManager()

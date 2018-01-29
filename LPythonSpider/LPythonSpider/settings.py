@@ -21,7 +21,9 @@ COOKIES_ENABLED = False
 DOWNLOADER_MIDDLEWARES = {
    #'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
    'LPythonSpider.middlewares.InvalidResponseHandlerMiddleware':400,
-   'LPythonSpider.middlewares.StatsAndErrorMailer':402
+   'LPythonSpider.middlewares.StatsAndErrorMailerMiddlware':402,
+   'LPythonSpider.middlewares.WeChatNoticeMiddlware':500
+
 
 }
 ITEM_PIPELINES = {
@@ -82,8 +84,8 @@ MAIL_USER = '1198746549@qq.com'
 MAIL_PASS = 'zqngiapraoivgaec'
 MAIL_SSL = True
 
-
-
+#微信通知是否可用
+WECHAT_NOTICE_ENABLED = True
 
 
 

@@ -12,6 +12,7 @@
 - [x] 支持自动关闭
 - [x] 支持异常状态收集，与重试
 - [x] 支持运行状态的邮件通知
+- [x] 支持运行状态的微信通知
 
 ## TodoList
 - [ ] 定时自动执行
@@ -213,6 +214,42 @@ CLOSESPIDER_TIMEOUT = 120
 >* 爬虫再次启动时，会自动根据`(spider_name):dupefilter`中的值进行过滤
 >* redis截图如下
  <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/redis_status.jpg" width="900" />
+
+#### 问题.邮件通知不及时
+>* 针对这个问题想到了使用微信进行通知
+>* 所以项目中使用 `itchat`这个第三方库
+>* 编写中间件来实现 基于运行状态的微信消息的自动发送和处理
+>* 部分代码
+```python
+    def spider_opened(self, spider):
+        if self.wechat_notice_enabled:
+            deferToThread(self._wechat_notice, u"%s spider start" % spider.name)
+
+    def spider_closed(self, spider):
+        spider_stats = self.stats.get_stats(spider)
+        body = "Global stats\n\n"
+        body += "\n".join("%-50s : %s" % i for i in self.stats.get_stats().items())
+        body += "\n\n%s stats\n\n" % spider.name
+        body += "\n".join("%-50s : %s" % i for i in spider_stats.items())
+        if self.wechat_notice_enabled:
+            deferToThread(self._wechat_notice, body)
+
+    def spider_error(self, failure, response, spider):
+        body = "Meet Error\n\n"
+        body += "\n\n%s error\n\n" % spider.name + "\n"
+        body += " ".join("error message is  : %s" % failure.getErrorMessage)
+        body += " ".join("error response url is  : %s" % response.url)
+        if self.wechat_notice_enabled:
+            deferToThread(self._wechat_notice, body)
+
+    def _wechat_notice(self, message):
+        if itchat.check_login == 200:
+            itchat.send_msg(message)
+        else:
+            itchat.auto_login(hotReload=True)
+            itchat.send_msg(message)
+        itchat.logout
+```
 
 #### 问题.如何让爬虫定时自动执行
 

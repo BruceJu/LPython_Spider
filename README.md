@@ -212,7 +212,7 @@ CLOSESPIDER_TIMEOUT = 120
 >* 只要每次关闭时，不清理redis的过滤队列，在setting中设置`SCHEDULER_PERSIST = True`即可
 >* 爬虫再次启动时，会自动根据`(spider_name):dupefilter`中的值进行过滤
 >* redis截图如下
- <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/redis_status.jpg" width="300" />
+ <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/redis_status.jpg" width="900" />
 
 #### 问题.如何让爬虫定时自动执行
 

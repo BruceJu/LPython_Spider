@@ -33,7 +33,7 @@ ITEM_PIPELINES = {
 EXTENSIONS = {
     'scrapy.exceptions.CloseSpider':500,
 }
-CLOSESPIDER_TIMEOUT = 600
+CLOSESPIDER_TIMEOUT = 60
 
 #无效Response重试和收集中间件的配置项
 RETRY_ENABLED = True
@@ -45,8 +45,10 @@ REDIS_PORT = ConfigManager.redis_port
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 DUPEFILTER_DEBUG = False
-SCHEDULER_FLUSH_ON_START = True
+SCHEDULER_FLUSH_ON_START = False
 SCHEDULER_IDLE_BEFORE_CLOSE = 30
+# Don't cleanup redis queues, allows to pause/resume crawls.
+SCHEDULER_PERSIST = True
 
 
 #自动优化加载速度的优化项

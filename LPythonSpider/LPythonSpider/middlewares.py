@@ -159,4 +159,4 @@ class StatsAndErrorMailer(object):
         body += "\n\n%s error\n\n" % spider.name+"\n"
         body += " ".join("error message is  : %s" % failure.getErrorMessage)
         body += " ".join("error response url is  : %s" % response.url)
-        return sendmail( body,self.recipients, "Scrapy meet a error for: %s" % spider.name)
+        return sendmail(body,self.recipients, "Scrapy meet a error for: %s" % spider.name)

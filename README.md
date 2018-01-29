@@ -10,12 +10,14 @@
 - [x] 支持防ban
 - [x] 支持动态抓取
 - [x] 支持自动关闭
-- [x] 支持过程可视化监控
-- [x] 支持可视化部署，及管理
 - [x] 支持异常状态收集，与重试
 - [x] 支持运行状态的邮件通知
 
 ## TodoList
+- [ ] 定时自动执行
+- [ ] 支持过程可视化监控
+- [ ] 支持可视化部署，及管理
+
 
 
 
@@ -204,7 +206,15 @@ CLOSESPIDER_TIMEOUT = 120
         return sendmail( body,self.recipients, "Scrapy meet a error for: %s" % spider.name)
 
 ```
-#### 问题.如何避免每次启动重复爬取
+##### 问题.如何避免每次启动重复爬取
+>* 如果说是启动时避免重复抓取的话，就需要有一个队列来存储已经爬取过的URL
+>* 分布式采用的是redis的作为调度器的，在运行时会把过去的请求写在redis中
+>* 只要每次关闭时，不清理redis的过滤队列，在setting中设置`SCHEDULER_PERSIST = True`即可
+>* 爬虫再次启动时，会自动根据`(spider_name):dupefilter`中的值进行过滤
+>* redis截图如下
+ <img src="https://github.com/BruceJu/LPython_Android/blob/master/LPython_Android/image/index.jpg" width="300" />
+
+#### 问题.如何让爬虫定时自动执行
 
 #### 问题.如何将分布式爬虫服务化
 

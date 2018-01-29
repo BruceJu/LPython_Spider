@@ -48,7 +48,7 @@ def sendmail(content, To, Subject):
                 s.login(msg_from, passwd)
                 s.sendmail(msg_from, msg_to, message.as_string())
                 print "发送成功"
-            except s.SMTPException, e:
+            except smtplib.SMTPException, e:
                 print "发送失败"
             finally:
                 s.quit()

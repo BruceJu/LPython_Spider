@@ -17,12 +17,14 @@ from twisted.web.client import ResponseFailed
 
 from helper.ConfigHelper import ConfigManager
 from Util.common import QueryRandomIP
-from scrapy.exceptions import NotConfigured
 from scrapy.utils.response import response_status_message
 from scrapy.core.downloader.handlers.http11 import TunnelError
 from scrapy.utils.python import global_object_name
 from helper.RedisHelper import redisManager
+from Util.common import sendmail
 
+from scrapy import signals
+from scrapy.exceptions import NotConfigured
 
 logger = logging.getLogger(__name__)
 
@@ -127,3 +129,34 @@ class InvalidResponseHandlerMiddleware(object):
         return response
 
 
+class StatsAndErrorMailer(object):
+
+    def __init__(self, stats, recipients):
+        self.stats = stats
+        self.recipients = recipients
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        recipients = crawler.settings.getlist("STATSMAILER_RCPTS")
+        if not recipients:
+            raise NotConfigured
+        o = cls(crawler.stats, recipients)
+        crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
+
+        crawler.signals.connect(o.spider_error, signal=signals.spider_error)
+        return o
+
+    def spider_closed(self, spider):
+        spider_stats = self.stats.get_stats(spider)
+        body = "Global stats\n\n"
+        body += "\n".join("%-50s : %s" % i for i in self.stats.get_stats().items())
+        body += "\n\n%s stats\n\n" % spider.name
+        body += "\n".join("%-50s : %s" % i for i in spider_stats.items())
+        return sendmail(body,self.recipients,"Scrapy stats for: %s" % spider.name)
+
+    def spider_error(self,failure, response, spider):
+        body = "Meet Error\n\n"
+        body += "\n\n%s error\n\n" % spider.name+"\n"
+        body += " ".join("error message is  : %s" % failure.getErrorMessage)
+        body += " ".join("error response url is  : %s" % response.url)
+        return sendmail( body,self.recipients, "Scrapy meet a error for: %s" % spider.name)

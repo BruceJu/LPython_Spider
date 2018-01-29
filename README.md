@@ -5,6 +5,21 @@
 > LPython项目目前设置了3个模块，分别是基于Python的 `文章`  ,`视频`  `招聘信息`数据来自知名博客，招聘信息信息站，在结构上使用scrapy,redis, mongodb,graphite实现的一个分布式网络爬虫,
 底层存储mongodb集群,分布式使用redis实现,爬虫状态显示使用graphite实现。
 
+- [x] 支持分布式
+- [x] 支持Redis动态配置和脚本处理
+- [x] 支持防ban
+- [x] 支持动态抓取
+- [x] 支持自动关闭
+- [x] 支持过程可视化监控
+- [x] 支持可视化部署，及管理
+- [x] 支持异常状态收集，与重试
+- [x] 支持运行状态的邮件通知
+
+## TodoList
+
+
+
+
 
 ### 文章模块
 > 对于文章模块，目前将针对 '伯乐在线'，'简书'，'头条'，'CSDN',的中的有关Python的信息进行抓取，会采用分布式爬虫，定向爬虫进行抓取，在存储上，采用MongDB分布式存储，另外由于LPython项目还存在移动端的部分，小程序中要求使用Https传输协议，为了节省成本，在存储数据时，还会用使用 LeanCloud后端云进行数据的备份存储，方便移动端的调用。
@@ -168,8 +183,27 @@ EXTENSIONS = {
 CLOSESPIDER_TIMEOUT = 120
 ```
     
-#### 问题.爬虫发生错误时如何及时响应，并以邮件的形式通知,这里补充发送邮件的逻辑
+##### 问题.爬虫发生错误时如何及时响应，并以邮件的形式通知,这里补充发送邮件的逻辑
+>* 写了一个中间件，响应信号，在爬虫关闭`spider_close`时，和发生错误时`spider_error`，进行邮件通知，
+>* 这里没有使用`scrapy`的内置邮件模块，因为在使用内置模块时，总出现问题
+>* 所以这里自己实现了发送邮件的逻辑。具体参考`StatsAndErrorMailer`这个类部分代码如下
+```python
+    def spider_closed(self, spider):
+        spider_stats = self.stats.get_stats(spider)
+        body = "Global stats\n\n"
+        body += "\n".join("%-50s : %s" % i for i in self.stats.get_stats().items())
+        body += "\n\n%s stats\n\n" % spider.name
+        body += "\n".join("%-50s : %s" % i for i in spider_stats.items())
+        return sendmail(body,self.recipients,"Scrapy stats for: %s" % spider.name)
 
+    def spider_error(self,failure, response, spider):
+        body = "Meet Error\n\n"
+        body += "\n\n%s error\n\n" % spider.name+"\n"
+        body += " ".join("error message is  : %s" % failure.getErrorMessage)
+        body += " ".join("error response url is  : %s" % response.url)
+        return sendmail( body,self.recipients, "Scrapy meet a error for: %s" % spider.name)
+
+```
 #### 问题.如何避免每次启动重复爬取
 
 #### 问题.如何将分布式爬虫服务化

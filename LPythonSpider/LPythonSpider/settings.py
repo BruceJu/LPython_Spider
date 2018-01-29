@@ -20,7 +20,8 @@ COOKIES_ENABLED = False
 
 DOWNLOADER_MIDDLEWARES = {
    #'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
-   'LPythonSpider.middlewares.InvalidResponseHandlerMiddleware':400
+   'LPythonSpider.middlewares.InvalidResponseHandlerMiddleware':400,
+   'LPythonSpider.middlewares.StatsAndErrorMailer':402
 
 }
 ITEM_PIPELINES = {
@@ -30,7 +31,7 @@ ITEM_PIPELINES = {
 }
 
 EXTENSIONS = {
-    'scrapy.exceptions.CloseSpider':500
+    'scrapy.exceptions.CloseSpider':500,
 }
 CLOSESPIDER_TIMEOUT = 600
 
@@ -60,6 +61,27 @@ AUTOTHROTTLE_MAX_DELAY = 60
 # LOG_FILE = LOG_FILE_NAME
 # #为 True，进程所有的标准输出(及错误)将会被重定向到log中(包括Print的输出)
 # LOG_STDOUT =True
+
+
+#发送邮件的配置项
+'''
+STATSMAILER_RCPTS：表示你要发送给谁，可以是一个列表 
+MAIL_FROM：发件人 
+MAIL_HOST：SMTP主机，这里只支持SMTP 
+MAIL_PORT：端口 
+MAIL_USER：登陆邮箱用户 
+MAIL_PASS：QQ邮箱的授权码
+'''
+STATSMAILER_RCPTS = ['develop_yangyang@163.com','yangyang.ju@tendcloud.com']
+MAIL_FROM = '1198746549@qq.com'
+MAIL_HOST = 'smtp.qq.com'
+MAIL_PORT = 465
+MAIL_USER = '1198746549@qq.com'
+MAIL_PASS = 'zqngiapraoivgaec'
+MAIL_SSL = True
+
+
+
 
 
 

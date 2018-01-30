@@ -35,7 +35,7 @@ ITEM_PIPELINES = {
 EXTENSIONS = {
     'scrapy.exceptions.CloseSpider':500,
 }
-CLOSESPIDER_TIMEOUT = 60
+CLOSESPIDER_TIMEOUT = 180
 
 #无效Response重试和收集中间件的配置项
 RETRY_ENABLED = True
@@ -85,7 +85,7 @@ MAIL_PASS = 'zqngiapraoivgaec'
 MAIL_SSL = True
 
 #微信通知是否可用
-WECHAT_NOTICE_ENABLED = True
+WECHAT_NOTICE_ENABLED = False
 
 
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import redis
-import threading
 import time
 from ConfigHelper import ConfigManager
 import logging
@@ -36,10 +35,6 @@ class RedisManager(Singleton):
         try:
             self.redis_server.lpush(self.config.jobbole_redis_key, self.config.jobbole_push_url)
             print "写入url成功!"
-            thread = threading.Thread(target=self.doQuery, args=(), name='thread-redis')
-            thread.start()
-            thread.join(120)
-            print "completed Bye "
         except Exception:
             print "写入失败"
 
@@ -72,5 +67,5 @@ class RedisManager(Singleton):
 redisManager = RedisManager()
 
 if __name__ == '__main__':
-    RedisManager = RedisManager()
+    RedisManager = RedisManager().doInitPush()
     RedisManager.doInitPush()

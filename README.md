@@ -6,6 +6,7 @@
 底层存储mongodb集群,分布式使用redis实现,爬虫状态显示使用graphite实现。
 
 - [x] 支持分布式
+- [x] 支持定时自动执行
 - [x] 支持Redis动态配置和脚本处理
 - [x] 支持防ban
 - [x] 支持动态抓取
@@ -15,7 +16,6 @@
 - [x] 支持运行状态的微信通知
 
 ## TodoList
-- [ ] 定时自动执行
 - [ ] 支持过程可视化监控
 - [ ] 支持可视化部署，及管理
 
@@ -215,7 +215,7 @@ CLOSESPIDER_TIMEOUT = 120
 >* redis截图如下
  <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/redis_status.jpg" width="900" />
 
-#### 问题.邮件通知不及时
+##### 问题.邮件通知不及时
 >* 针对这个问题想到了使用微信进行通知
 >* 所以项目中使用 `itchat`这个第三方库
 >* 编写中间件来实现 基于运行状态的微信消息的自动发送和处理
@@ -251,7 +251,49 @@ CLOSESPIDER_TIMEOUT = 120
         itchat.logout
 ```
 
-#### 问题.如何让爬虫定时自动执行
+##### 问题.如何让爬虫定时自动执行
+>* 针对这个问题是使用了`celery`这个框架，来设置定时任务的。
+>* 大致逻辑是设置每天00:00进行执行爬虫启动的函数和redis初始化的函数
+>* 具体逻辑参考`helper/tasks.py`和`helper/tasks_config.py`,部分代码和截图如下
+```python
+# -*- coding: utf-8 -*-
+from datetime import timedelta
+from celery.schedules import crontab
+from ConfigHelper import ConfigManager
+
+
+# Broker and Backend
+BROKER_URL = 'redis://{0}:{1}'.format(ConfigManager.redis_host, ConfigManager.redis_port)
+CELERY_RESULT_BACKEND = 'redis://{0}:{1}/0'.format(ConfigManager.redis_host, ConfigManager.redis_port)
+# Timezone
+CELERY_TIMEZONE = 'Asia/Shanghai'  # 指定时区，不指定默认为 'UTC'
+
+CELERY_IMPORTS = (
+    'tasks',
+)
+# schedules
+CELERYBEAT_SCHEDULE = {
+    'multiply-at-some-time': {
+        'task': 'tasks.start_spider',
+        'schedule':crontab(minute=0,hour=0),  # 每天早上 00点 00分执行一次
+        'args': (1,1)  # 任务函数参数
+    },
+    'multiply-at-some-time': {
+        'task': 'tasks.push_url_to_redis',
+        'schedule': crontab(minute=01,hour=0),  # 每天早上 00 点 01分执行一次
+        'args': (1,1)  # 任务函数参数
+    }
+}
+```
+<div style="fload:left,margin:10px,display:inline">
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/celery_send_start.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/celery_servier_start.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/celery_task_send.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/spider_completed.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/all_redis_status.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/email_completed_notice.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/email_notice_detail.png" width="250" />
+</div>
 
 #### 问题.如何将分布式爬虫服务化
 

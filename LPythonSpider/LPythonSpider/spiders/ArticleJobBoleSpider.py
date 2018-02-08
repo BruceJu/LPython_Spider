@@ -8,11 +8,11 @@ import logging
 from scrapy.http import Request
 from scrapy_redis.spiders import RedisSpider
 
-from ..Util import common
+from Util import common
 # 这里不要删除，否则leancloud无法初始化
-from ..helper.CloudServerHelper import ConfigManager
-from ..helper.ConfigHelper import ConfigManager
-from ..items import ArticleItemLoader, LpythonspiderItem
+from helper.CloudServerHelper import ConfigManager
+from helper.ConfigHelper import ConfigManager
+from items import ArticleItemLoader, LpythonspiderItem
 
 logger = logging.getLogger(__name__)
 

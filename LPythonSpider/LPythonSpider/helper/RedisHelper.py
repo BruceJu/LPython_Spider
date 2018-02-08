@@ -67,5 +67,5 @@ class RedisManager(Singleton):
 redisManager = RedisManager()
 
 if __name__ == '__main__':
-    RedisManager = RedisManager().doInitPush()
+    RedisManager = RedisManager()
     RedisManager.doInitPush()

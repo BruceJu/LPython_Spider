@@ -21,13 +21,14 @@ from twisted.internet.error import TimeoutError, DNSLookupError, \
     ConnectionLost, TCPTimedOutError
 from twisted.internet.threads import deferToThread
 from twisted.web.client import ResponseFailed
-
 from Util.common import QueryRandomIP
 from Util.common import sendmail
 from helper.ConfigHelper import ConfigManager
 from helper.RedisHelper import redisManager
 
+
 logger = logging.getLogger(__name__)
+
 
 
 class RandomUserAgentMiddlware(object):
@@ -141,7 +142,6 @@ class StatsAndErrorMailerMiddlware(object):
             raise NotConfigured
         o = cls(crawler.stats, recipients)
         crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
-
         crawler.signals.connect(o.spider_error, signal=signals.spider_error)
         return o
 
@@ -205,3 +205,50 @@ class WeChatNoticeMiddlware(object):
             itchat.auto_login(hotReload=True)
             itchat.send_msg(message)
         itchat.logout
+
+from pymongo import MongoClient
+from twisted.internet import task
+
+class DBstatsMiddewares(object):
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        o = cls(crawler.stats)
+        crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
+        crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
+        return o
+
+    def __init__(self,Stats):
+        self.stats = Stats
+        self.interval =20.0
+        self.task = None
+        self.default_serialize = ScrapyJSONEncoder().encode
+
+    def spider_closed(self,spider):
+        self.collection.close()
+        self.conn.close();
+        self.conn = None;
+
+    def spider_opened(self,spider):
+        self.conn = MongoClient(host='127.0.0.1',port=27017)
+        self.db = self.conn.spider  # 连接mydb数据库，没有则自动创建
+        self.collection = self.db.test_spider # 使用test_set集合，没有则自动创建
+        self.task = task.LoopingCall(self.doUpData4Mongodb, spider)
+        self.task.start(self.interval)
+        msg = ("!!!!!!!!!!!!!!!!!!!!!!!!连接成功，任务开启!!!!!!!!!!!!!!!!!!!!!!")
+        logger.info(msg)
+
+    def doUpData4Mongodb(self,spider):
+        items = self.stats.get_value('item_scraped_count', 0)
+        pages = self.stats.get_value('response_received_count', 0)
+        spider_name = '%s'%spider.name
+        stats_data = {'spider':spider_name,'pages': pages,'items': items}
+        msg = ("!!!!!!!!!!!!!!!!!!!!!!!!Crawled pages is {0} and scraped items is {1}!!!!!!!!!!!!!!!!!!!!!!!".format(pages,items))
+        logger.info(msg)
+        print self.collection.update({'spider':spider_name},{"$set":stats_data},upsert=True)
+
+
+
+
+
+

@@ -213,7 +213,7 @@ CLOSESPIDER_TIMEOUT = 120
 >* 只要每次关闭时，不清理redis的过滤队列，在setting中设置`SCHEDULER_PERSIST = True`即可
 >* 爬虫再次启动时，会自动根据`(spider_name):dupefilter`中的值进行过滤
 >* redis截图如下
- <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/redis_status.jpg" width="900" />
+ <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/redis_status.jpg" width="900" />
 
 ##### 问题.邮件通知不及时
 >* 针对这个问题想到了使用微信进行通知
@@ -286,16 +286,18 @@ CELERYBEAT_SCHEDULE = {
 }
 ```
 <div style="fload:left,margin:10px,display:inline">
-   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/celery_send_start.png" width="250" />
-   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/celery_servier_start.png" width="250" />
-   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/celery_task_send.png" width="250" />
-   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/spider_completed.png" width="250" />
-   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/all_redis_status.png" width="250" />
-   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/email_completed_notice.png" width="250" />
-   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/image/email_notice_detail.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/celery_send_start.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/celery_servier_start.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/celery_task_send.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/spider_completed.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/all_redis_status.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/email_completed_notice.png" width="250" />
+   <img src="https://github.com/BruceJu/LPython_Spider/blob/master/LPythonSpider/LPythonSpider/static/image/email_notice_detail.png" width="250" />
 </div>
 
 #### 问题.如何将分布式爬虫服务化
+
+
 
 #### 问题.如何以web服务的方式监控爬虫运行
   

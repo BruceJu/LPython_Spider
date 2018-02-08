@@ -17,14 +17,12 @@ DOWNLOAD_DELAY = 10
 CONCURRENT_REQUESTS_PER_DOMAIN = 16
 CONCURRENT_REQUESTS_PER_IP = 16
 COOKIES_ENABLED = False
-
 DOWNLOADER_MIDDLEWARES = {
-   #'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
-   'LPythonSpider.middlewares.InvalidResponseHandlerMiddleware':400,
-   'LPythonSpider.middlewares.StatsAndErrorMailerMiddlware':402,
-   'LPythonSpider.middlewares.WeChatNoticeMiddlware':500
-
-
+   'LPythonSpider.middlewares.RandomUserAgentMiddlware': 543,
+   'LPythonSpider.middlewares.DBstatsMiddewares':500,
+   #'LPythonSpider.middlewares.InvalidResponseHandlerMiddleware':400,
+   #'LPythonSpider.middlewares.StatsAndErrorMailerMiddlware':402,
+   #'LPythonSpider.middlewares.WeChatNoticeMiddlware':500,
 }
 ITEM_PIPELINES = {
    #是否将item刷新至redis
@@ -35,6 +33,8 @@ ITEM_PIPELINES = {
 EXTENSIONS = {
     'scrapy.exceptions.CloseSpider':500,
 }
+JSONRPC_ENABLED = True
+JSONRPC_PORT = [6080, 7030]
 CLOSESPIDER_TIMEOUT = 180
 
 #无效Response重试和收集中间件的配置项
@@ -48,16 +48,16 @@ SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 DUPEFILTER_DEBUG = False
 SCHEDULER_FLUSH_ON_START = False
-SCHEDULER_IDLE_BEFORE_CLOSE = 30
+SCHEDULER_IDLE_BEFORE_CLOSE = 20
 # Don't cleanup redis queues, allows to pause/resume crawls.
 SCHEDULER_PERSIST = True
 
 
 #自动优化加载速度的优化项
-AUTOTHROTTLE_START_DELAY = 5
-AUTOTHROTTLE_DEBUG = True
-AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_MAX_DELAY = 60
+# AUTOTHROTTLE_START_DELAY = 5
+# AUTOTHROTTLE_DEBUG = True
+# AUTOTHROTTLE_ENABLED = True
+# AUTOTHROTTLE_MAX_DELAY = 60
 
 #日志文件输出配置项目
 # local = arrow.now()

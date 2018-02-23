@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask_script import Manager, prompt_bool
 from scrapy import cmdline
+from scrapy.spiders import cmdline
 
 from WebServer.WebService import app
 from helper.RedisHelper import redisManager
@@ -36,6 +37,7 @@ def start_spider(name):
     :param name:爬虫名字，可通过 spider_list获取所有爬虫的名字
     :return:
     '''
+
     if prompt_bool("Are you sure you want to start spider %s" % name):
         crawl_script = 'scrapy crawl {0}'.format(name)
         cmdline.execute(crawl_script.split())
